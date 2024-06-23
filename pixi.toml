@@ -8,11 +8,11 @@ platforms = ["osx-64", "linux-64"]
 
 [tasks]
 pwd = "pwd"
-configure = "cmake -DCMAKE_BUILD_TYPE=Release -GNinja -S. -B.build"
+configure = "cmake -DCMAKE_BUILD_TYPE=Debug -GNinja -S. -B.build"
 build = "cmake --build .build"
-test = { cmd = ".build/index", depends-on = ["build"] }
-dbg-cfg = "cmake -DCMAKE_BUILD_TYPE=Debug -GNinja -S. -B.build-dbg"
-dbg-build = "cmake --build .build-dbg"
+test = { cmd = "pixi run ninja test -C.build", depends-on = ["build"] }
+run = { cmd = ".build/index", depends-on = ["build"] }
+release = "cmake -DCMAKE_BUILD_TYPE=Release -GNinja -S. -B.build-rel ; cmake --build .build-rel ; .build-rel/index"
 
 [dependencies]
 cxx-compiler = ">=1.7.0,<1.8"

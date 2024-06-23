@@ -10,9 +10,8 @@ find_package(benchmark REQUIRED)
 add_compile_options(-fsanitize=address)
 add_link_options(-fsanitize=address)
 
-# Add the executable
-add_executable(index
-    index.cc
+add_library(sortedsearch
+    STATIC
     vec_uar.hh
     vec_uar.cc
     Span.hh
@@ -21,5 +20,15 @@ add_executable(index
     SortedBlockIndex.hh
 )
 
-# Link with Google Benchmark
-target_link_libraries(index PRIVATE benchmark::benchmark)
+# Add the executable
+add_executable(index
+    index.cc
+)
+
+target_link_libraries(index PRIVATE benchmark::benchmark sortedsearch)
+
+add_executable(SortedBlockIndexExe SortedBlockIndex_test.cc)
+target_link_libraries(SortedBlockIndexExe  sortedsearch)
+
+enable_testing()
+add_test(NAME SortedBlockIndexTest COMMAND SortedBlockIndexExe)

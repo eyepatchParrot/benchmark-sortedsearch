@@ -1,0 +1,20 @@
+[project]
+name = "index"
+version = "0.1.0"
+description = "Add a short description here"
+authors = ["Peter Van Sandt <peter.vansandt@gmail.com>"]
+channels = ["conda-forge"]
+platforms = ["osx-64"]
+
+[tasks]
+configure = "cmake -GNinja -S. -B.build"
+pwd = "pwd"
+build = "cmake --build .build"
+test = { cmd = ".build/index", depends-on = ["build"] }
+
+[dependencies]
+cxx-compiler = ">=1.7.0,<1.8"
+benchmark = ">=1.8.4,<1.9"
+cmake = ">=3.29.6,<3.30"
+ninja = ">=1.12.1,<1.13"
+lazygit = ">=0.42.0,<0.43"

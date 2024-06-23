@@ -13,6 +13,8 @@ add_executable(index
     vec_uar.cc
     Span.hh
     hdr.hh
+    SortedBlockIndex.cc
+    SortedBlockIndex.hh
 )
 
 # Link with Google Benchmark

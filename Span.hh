@@ -10,6 +10,8 @@ template<class T> struct Span {
 
     T* begin() const { return p_; }
     T* end() const { return p_ + n_; }
+    uz size() const { return n_; }
+    T& operator[](uz i) const { return p_[i]; }
 };
 }
 

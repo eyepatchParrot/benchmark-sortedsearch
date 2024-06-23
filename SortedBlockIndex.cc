@@ -23,25 +23,25 @@ SortedBlockIndex::SortedBlockIndex(Span<T> level0, uz block_bytes) : order(block
         current_length = (current_length + order - 1) / order;
         lengths.push_back(current_length);
     }
-    std::vector<uz> offsets(lengths.size());
+    offsets.resize(lengths.size());
     std::partial_sum(lengths.begin(), lengths.end(), offsets.begin());
 
-    std::vector<u64> master_index(offsets.back());
+    index.resize(offsets.back());
     auto current_level = level0;
 
     uz start_idx = 0;
     for (uz i = 0; i < offsets.size() - 1; ++i) {
         uz end_idx = offsets[i + 1];
         std::vector<T> next_level = construct_next_level(current_level, order);
-        std::copy(next_level.begin(), next_level.end(), master_index.begin() + start_idx);
-        current_level = Span<T>{master_index.data() + start_idx, next_level.size()};
+        std::copy(next_level.begin(), next_level.end(), index.begin() + start_idx);
+        current_level = Span<T>{index.data() + start_idx, next_level.size()};
         start_idx = end_idx;
     }
 }
 } // namespace pvc
 
 namespace pv {
-uz search_sorted_block_index(Span<T> level0, int value, const SortedBlockIndex& h_index)
+uz search_sorted_block_index(Span<T> level0, T value, const SortedBlockIndex& h_index)
 {
     const auto& index = h_index.index;
     const auto& offsets = h_index.offsets;

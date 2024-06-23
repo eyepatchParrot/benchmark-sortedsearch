@@ -2,9 +2,13 @@ cmake_minimum_required(VERSION 3.12)
 project(Index)
 
 set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 
 # Find Google Benchmark
 find_package(benchmark REQUIRED)
+
+add_compile_options(-fsanitize=address)
+add_link_options(-fsanitize=address)
 
 # Add the executable
 add_executable(index

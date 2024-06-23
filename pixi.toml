@@ -4,20 +4,18 @@ version = "0.1.0"
 description = "Add a short description here"
 authors = ["Peter Van Sandt <peter.vansandt@gmail.com>"]
 channels = ["conda-forge"]
-platforms = ["osx-64"]
+platforms = ["osx-64", "linux-64"]
 
 [tasks]
-configure = "cmake -GNinja -S. -B.build"
 pwd = "pwd"
+configure = "cmake -DCMAKE_BUILD_TYPE=Release -GNinja -S. -B.build"
 build = "cmake --build .build"
 test = { cmd = ".build/index", depends-on = ["build"] }
+dbg-cfg = "cmake -DCMAKE_BUILD_TYPE=Debug -GNinja -S. -B.build-dbg"
+dbg-build = "cmake --build .build-dbg"
 
 [dependencies]
 cxx-compiler = ">=1.7.0,<1.8"
 benchmark = ">=1.8.4,<1.9"
 cmake = ">=3.29.6,<3.30"
 ninja = ">=1.12.1,<1.13"
-lazygit = ">=0.42.0,<0.43"
-jupyter = ">=1.0.0,<1.1"
-networkx = ">=3.3,<4"
-matplotlib = ">=3.8.4,<3.9"

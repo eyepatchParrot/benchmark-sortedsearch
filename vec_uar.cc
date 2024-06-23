@@ -2,6 +2,7 @@
 
 #include <limits>
 #include <random>
+#include <algorithm>
 
 namespace pv {
 

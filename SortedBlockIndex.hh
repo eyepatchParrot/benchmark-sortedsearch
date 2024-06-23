@@ -22,7 +22,7 @@ struct SortedBlockIndex {
 }
 
 namespace pv {
-uz search_sorted_block_index(Span<u64> level0, int value, const SortedBlockIndex& h_index);
+uz search_sorted_block_index(Span<u64> level0, u64 value, const SortedBlockIndex& h_index);
 }
 
 #endif // SortedBlockIndex_hh_INCLUDED

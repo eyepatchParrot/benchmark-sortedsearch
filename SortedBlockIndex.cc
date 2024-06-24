@@ -1,4 +1,5 @@
 #include "SortedBlockIndex.hh"
+#include <immintrin.h>
 
 using namespace pvc;
 using T = SortedBlockIndex::T;
@@ -13,6 +14,8 @@ std::vector<T> construct_next_level(Span<T> prev_level, uz block_size) {
     }
     return next_level;
 }
+// Each element in the parent is the first element of a child array. We search with lower_bound, and skip the first child,
+// So we know that the first target to get sent to the second child is the first one to match the first element of that child.
 }
 
 SortedBlockIndex::SortedBlockIndex(Span<T> level0, uz block_bytes) : order(block_bytes / sizeof(T)) {
@@ -42,6 +45,20 @@ SortedBlockIndex::SortedBlockIndex(Span<T> level0, uz block_bytes) : order(block
 } // namespace pvc
 
 namespace pv {
+namespace {
+uz lb8_cnt(u64 const * X, u64 y) {
+    auto vy = _mm256_set1_epi64x(y);
+    auto vx0 = _mm256_loadu_si256((__m256i const *)X);
+    auto vx4 = _mm256_loadu_si256((__m256i const *)(X+4));
+    auto cmp0 = _mm256_cmpgt_epi64(vx0, vy);
+    auto cmp4 = _mm256_cmpgt_epi64(vx4, vy);
+    auto blend = _mm256_blend_epi32(cmp0, cmp4, 0x55);
+    auto mask = _mm256_movemask_ps(blend);
+    auto sum = _mm_popcnt_u32(mask);
+    return sum;
+}
+}
+
 uz search_sorted_block_index(Span<T> level0, T value, const SortedBlockIndex& h_index)
 {
     const auto& index = h_index.index;
@@ -55,13 +72,31 @@ uz search_sorted_block_index(Span<T> level0, T value, const SortedBlockIndex& h_
         auto end_idx = std::min(level_start + start_idx + block_size, level_end);
         auto search_begin = index.begin() + level_start + start_idx;
         auto search_end = index.begin() + end_idx;
-        auto pos = std::distance(index.begin() + level_start, std::lower_bound(search_begin, search_end, value));
-        start_idx = pos * block_size;
+        if (search_end - search_begin == 8) {
+#if 0
+            auto pos = std::distance(index.begin() + level_start, std::lower_bound(search_begin, search_end, value));
+#else
+            auto pos = lb8_cnt(index.data() + level_start + start_idx, value);
+#endif
+            start_idx = pos * block_size;
+        } else {
+            auto pos = std::distance(index.begin() + level_start, std::lower_bound(search_begin, search_end, value));
+            start_idx = pos * block_size;
+        }
     }
 
     auto end_idx = std::min(start_idx + block_size, level0.size());
     auto search_begin = level0.begin() + start_idx;
     auto search_end = level0.begin() + end_idx;
-    return std::distance(level0.begin(), std::lower_bound(search_begin, search_end, value));
+    if (search_end - search_begin == 8) {
+#if 0
+        auto pos = std::distance(index.begin() + level_start, std::lower_bound(search_begin, search_end, value));
+#else
+        auto pos = lb8_cnt(level0.p_ + start_idx, value);
+#endif
+        return start_idx + pos;
+    } else {
+        return std::distance(level0.begin(), std::lower_bound(search_begin, search_end, value));
+    }
 }
 }

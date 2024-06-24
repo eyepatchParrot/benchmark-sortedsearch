@@ -15,6 +15,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/linux-64/c-ares-1.28.1-hd590300_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/c-compiler-1.7.0-hd590300_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/ca-certificates-2024.6.2-hbcca054_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/linux-64/catch2-3.6.0-h297d8ca_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/cmake-3.29.6-hcafd917_0.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/cxx-compiler-1.7.0-h00ab1b0_1.conda
       - conda: https://conda.anaconda.org/conda-forge/linux-64/gcc-12.3.0-h915e2ae_12.conda
@@ -54,6 +55,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/c-ares-1.28.1-h10d778d_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/c-compiler-1.7.0-h282daa2_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/ca-certificates-2024.6.2-h8857fd0_0.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-64/catch2-3.6.0-hfd4f2f2_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/cctools-986-h40f6528_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/cctools_osx-64-986-ha1c5b94_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/clang-16-16.0.6-default_h4c8afb6_8.conda
@@ -314,6 +316,32 @@ packages:
   license: ISC
   size: 156035
   timestamp: 1717311767102
+- kind: conda
+  name: catch2
+  version: 3.6.0
+  build: h297d8ca_0
+  subdir: linux-64
+  url: https://conda.anaconda.org/conda-forge/linux-64/catch2-3.6.0-h297d8ca_0.conda
+  sha256: c25cc9ffd657ea71766a8fce78797c0b4db5e64cdc592e8489a210becfe2d2cd
+  md5: 7c274652aedb14655b3b13064d246a19
+  depends:
+  - libgcc-ng >=12
+  license: BSL-1.0
+  size: 637153
+  timestamp: 1714944096790
+- kind: conda
+  name: catch2
+  version: 3.6.0
+  build: hfd4f2f2_0
+  subdir: osx-64
+  url: https://conda.anaconda.org/conda-forge/osx-64/catch2-3.6.0-hfd4f2f2_0.conda
+  sha256: e4ee4d77ac8c7a9c5c594cc4fc92ea088df073fc82179b87ee4faa88f7d1f6fe
+  md5: 18bc5220a4227cc2d850de4c3fb69fdc
+  depends:
+  - __osx >=10.9
+  license: BSL-1.0
+  size: 545734
+  timestamp: 1714944328200
 - kind: conda
   name: cctools
   version: '986'

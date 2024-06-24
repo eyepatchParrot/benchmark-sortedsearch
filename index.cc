@@ -64,8 +64,8 @@ static void BM_Both(benchmark::State& state) {
     state.counters["Bytes"] = bytes;
 }
 
-// BENCHMARK(BM_LowerBound)->Range(64 * 1024, 1 << 20); // Vary data size
-// BENCHMARK(BM_SortedBlockIndex)->Range(64 * 1024, 1 << 20); // Vary data size
-BENCHMARK(BM_Both)->Range(64 * 1024, 1 << 20); // Vary data size
+BENCHMARK(BM_LowerBound)->Range(64 * 1024, 1 << 30); // Vary data size
+BENCHMARK(BM_SortedBlockIndex)->Range(64 * 1024, 1 << 30); // Vary data size
+// BENCHMARK(BM_Both)->Range(64 * 1024, 1 << 20); // Vary data size
 
 BENCHMARK_MAIN();

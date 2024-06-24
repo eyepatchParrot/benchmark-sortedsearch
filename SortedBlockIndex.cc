@@ -6,9 +6,9 @@ using T = SortedBlockIndex::T;
 namespace pvc {
 namespace {
 std::vector<T> construct_next_level(Span<T> prev_level, uz block_size) {
-    uz num_blocks = (prev_level.size() + block_size - 1) / block_size;
+    uz num_blocks = (prev_level.size() - 1) / block_size;
     std::vector<T> next_level;
-    for (uz i = block_size - 1; i < prev_level.size(); i += block_size) {
+    for (uz i = block_size; i < prev_level.size(); i += block_size) {
         next_level.push_back(prev_level[i]);
     }
     return next_level;
@@ -20,7 +20,8 @@ SortedBlockIndex::SortedBlockIndex(Span<T> level0, uz block_bytes) : order(block
     auto current_length = level0.size();
 
     while (current_length > order) {
-        current_length = (current_length + order - 1) / order;
+        // This needs to be sync'd with construct_next_level
+        current_length = (current_length - 1) / order;
         lengths.push_back(current_length);
     }
     offsets.resize(lengths.size());
@@ -47,19 +48,20 @@ uz search_sorted_block_index(Span<T> level0, T value, const SortedBlockIndex& h_
     const auto& offsets = h_index.offsets;
     auto block_size = h_index.order;
 
-    int start_idx = 0;
-
+    uz start_idx = 0;
     for (int i = offsets.size() - 1; i > 0; --i) {
-        int level_start = offsets[i - 1];
-        int level_end = offsets[i];
-        int end_idx = start_idx + block_size;
-
-        auto pos = std::lower_bound(index.begin() + level_start + start_idx, index.begin() + level_start + end_idx, value);
-        start_idx = (pos - (index.begin() + level_start + start_idx) + start_idx) * block_size;
+        auto level_start = offsets[i - 1];
+        auto level_end = offsets[i];
+        auto end_idx = std::min(level_start + start_idx + block_size, level_end);
+        auto search_begin = index.begin() + level_start + start_idx;
+        auto search_end = index.begin() + end_idx;
+        auto pos = std::distance(index.begin() + level_start, std::lower_bound(search_begin, search_end, value));
+        start_idx = pos * block_size;
     }
 
-    int end_idx = start_idx + block_size;
-    auto pos = std::lower_bound(level0.begin() + start_idx, level0.begin() + end_idx, value);
-    return start_idx + (pos - (level0.begin() + start_idx));
+    auto end_idx = std::min(start_idx + block_size, level0.size());
+    auto search_begin = level0.begin() + start_idx;
+    auto search_end = level0.begin() + end_idx;
+    return std::distance(level0.begin(), std::lower_bound(search_begin, search_end, value));
 }
 }

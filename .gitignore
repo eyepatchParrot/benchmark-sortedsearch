@@ -6,3 +6,4 @@
 bfs-tree.ipynb
 sorted-index.ipynb
 .build-dbg
+.build-rel

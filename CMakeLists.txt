@@ -2,13 +2,10 @@ cmake_minimum_required(VERSION 3.12)
 project(Index)
 
 set (CMAKE_CXX_STANDARD 17)
-set (CMAKE_CXX_FLAGS_DEBUG "-g -O0")
+set (CMAKE_CXX_FLAGS_DEBUG "-g -O0 -fsanitize=address")
 
-# Find Google Benchmark
 find_package(benchmark REQUIRED)
-
-add_compile_options(-fsanitize=address)
-add_link_options(-fsanitize=address)
+find_package(Catch2 REQUIRED)
 
 add_library(sortedsearch
     STATIC
@@ -21,14 +18,11 @@ add_library(sortedsearch
 )
 
 # Add the executable
-add_executable(index
-    index.cc
-)
-
+add_executable(index index.cc)
 target_link_libraries(index PRIVATE benchmark::benchmark sortedsearch)
 
 add_executable(SortedBlockIndexExe SortedBlockIndex_test.cc)
-target_link_libraries(SortedBlockIndexExe  sortedsearch)
+target_link_libraries(SortedBlockIndexExe sortedsearch Catch2::Catch2WithMain)
 
 enable_testing()
 add_test(NAME SortedBlockIndexTest COMMAND SortedBlockIndexExe)

@@ -2,7 +2,10 @@ cmake_minimum_required(VERSION 3.12)
 project(Index)
 
 set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set (CMAKE_CXX_FLAGS_DEBUG "-g -O0 -fsanitize=address")
+string(APPEND CMAKE_CXX_FLAGS " -march=skylake -mtune=skylake")
+# string(APPEND CMAKE_CXX_FLAGS " -march=skylake")
 
 find_package(benchmark REQUIRED)
 find_package(Catch2 REQUIRED)
